@@ -8,6 +8,4 @@
 ## Datasets
 https://universe.roboflow.com/apollo-solutions-dev/sitting-and-standing
 
-https://universe.roboflow.com/hyeonchul-jung/lying-person
-
-https://ieee-dataport.org/open-access/silhouettes-human-posture-recognition
+https://universe.roboflow.com/aiclass-0iggv/human-pose-dv1bm
