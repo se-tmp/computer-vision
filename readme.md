@@ -1,6 +1,7 @@
 # Computer vision / Machine learning
 
 ## Used framework/library
+
 [Pytorch](https://pytorch.org/)
 
 [OpenCV](https://opencv.org/)
@@ -10,6 +11,11 @@
 <!-- [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) -->
 
 ## Datasets
+
 https://universe.roboflow.com/apollo-solutions-dev/sitting-and-standing
 
 https://universe.roboflow.com/ctuet/fall_ip_camera
+
+https://universe.roboflow.com/itrvn/action-patient-recognition-version-fit-human/dataset/8
+
+https://universe.roboflow.com/lingfeng-gu/pose-usyfy/dataset/2
