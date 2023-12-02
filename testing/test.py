@@ -37,8 +37,8 @@ while True:
 
             org = [x1, y1]
             font = cv2.FONT_HERSHEY_SIMPLEX
-            fontScale = 5
-            thickness = 4
+            fontScale = 4
+            thickness = 10
 
             cv2.putText(img, classNames[cls], org, font, fontScale, color, thickness)
 
