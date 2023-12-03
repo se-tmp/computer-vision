@@ -5,7 +5,7 @@ from ThreadedCamera import ThreadedCamera
 from Processor import Processor, classNames
 
 model = YOLO("model.pt")
-rtmpAddress = "rtmp://rapisim.asuscomm.com/live/test"
+rtmpAddress = "rtmp://rapisim.asuscomm.com/mystream/test"
 
 def signal_handler(sig, frame):
     sys.exit(0)
@@ -32,17 +32,17 @@ def draw_for_test(img, x1, y1, x2, y2, cls):
      
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
+    processor = Processor(1)
     while True:
         threaded_camera = ThreadedCamera(rtmpAddress)
-        processor = Processor(1)
         time.sleep(1)
 
         while True:
             try:
-                # threaded_camera.show_frame()
+                threaded_camera.show_frame()
                 img = threaded_camera.read()
                 results = model(img, stream=True)
-                w, h = 1920, 1080
+                w, h = 1280, 720
 
                 for r in results:
                         boxes = r.boxes
@@ -51,10 +51,10 @@ if __name__ == '__main__':
                             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
                             cls = int(box.cls[0])
                             
-                            processor.push((x1/w, y1/h), (x2/w, y2/h), cls)
+                            processor.push(((x1/w, y1/h), (x2/w, y2/h), cls))
                             # print((x1/w, y1/h), (x2/w, y2/h))
                             # print("Class name -->", classNames[cls])
-                            # draw_for_test(img, x1, y1, x2, y2, cls)
+                            draw_for_test(img, x1, y1, x2, y2, cls)
             except:
                 print("connection failed..")
                 traceback_message = traceback.format_exc()

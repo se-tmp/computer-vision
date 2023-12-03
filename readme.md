@@ -8,6 +8,8 @@
 
 [YOLOv8](https://docs.ultralytics.com/ko/)
 
+[MediaMtx](https://github.com/bluenviron/mediamtx)
+
 <!-- [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) -->
 
 ## Used datasets

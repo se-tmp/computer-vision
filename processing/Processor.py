@@ -63,7 +63,7 @@ class Processor(object):
 
     def process(self):
         while True:
-            boxes=list(self.q)
+            boxes=list(self.q.queue)
             self.q = Queue()
 
             groups = self._group_similar_points(boxes)
