@@ -5,7 +5,7 @@ from FcmManager import FcmManager
 from Firestore import Firestore
 import time
 
-classNames = ["lie", "sit", "stand", ""]
+classNames = ["Lie", "Sit", "Stand", ""]
 # box = {{x1, y1}, {x2, y2}, cls}
 
 class Processor(object):
@@ -26,8 +26,8 @@ class Processor(object):
         # get the euclidean dist between lt points
         return math.sqrt((box1[0][0] - box2[0][0])**2 + (box1[0][1] - box2[0][1])**2)
     
-    def _group_similar_points(self, boxes, threshold = 0.07):
-        groups = []
+    def _group_similar_points(self, boxes: list[tuple[tuple[float, float], tuple[float, float], str]], threshold = 0.07):
+        groups: list[list[tuple[tuple[float, float], tuple[float, float], str]]] = []
         
         for box in boxes:
             added_to_group = False
@@ -42,20 +42,24 @@ class Processor(object):
                 groups.append([box])
         return groups
     
-    def _get_center(self, point1, point2):
-        return ((point1[0]+point2[0])/2, (point1[1]+point2[1])/2, point1[2])
+    def _get_center(self, point: tuple[tuple[float, float], tuple[float, float], str]) -> tuple[float, float, str]:
+        return ((point[0][0]+point[1][0])/2, (point[0][1]+point[0][1])/2, point[2])
 
-    def _check_trigger(self, point):
+    def _check_trigger(self, center_point: tuple[float, float, int]) -> list[str]:
         ret = []
-        res = set()
-        triggers = self.firestore.db.collection(u'trigger').get()
+        res: set[str] = set()
+        triggers = self.firestore.db.collection(u'trigger').stream()
 
-        for trigger_raw in triggers:
-            trigger = trigger_raw.to_dict()
-            if trigger['detect_posture'] == point[2] and trigger['lt_x'] <= point[0] <= trigger['rb_x'] and trigger['lt_y'] <= point[1] <= trigger['rb_y']:
-                if not (trigger['routine_id'] in self.prev):
-                    ret.append(trigger['routine_id'])
-                set.add(trigger['routine_id'])
+        for trigger_raw_json in triggers:
+            trigger_raw: dict[str, dict[str, str]] = trigger_raw_json.to_dict()
+            trigger_key = list(trigger_raw.keys())[0]
+            trigger: dict[str, str] = trigger_raw[trigger_key]
+
+            if trigger['detectPosture'] == center_point[2] and float(trigger['lt_x']) <= center_point[0] <= float(trigger['rb_x']) and float(trigger['lt_y']) <= center_point[1] <= float(trigger['rb_y']):
+                print("detected", center_point, center_point[2])
+                if not (trigger['routineId'] in self.prev):
+                    ret.append(trigger['routineId'])
+                res.add(trigger['routineId'])
         
         self.prev = res
 
@@ -63,7 +67,7 @@ class Processor(object):
 
     def process(self):
         while True:
-            boxes=list(self.q.queue)
+            boxes: list[tuple[tuple[float, float], tuple[float, float], str]]=list(self.q.queue)
             self.q = Queue()
 
             groups = self._group_similar_points(boxes)
@@ -71,7 +75,7 @@ class Processor(object):
             for group in groups:
                 if len(group) > 10:
                     target = sorted(group)[len(group)//2]
-                    target_center = self._get_center(target[0], target[1])
+                    target_center = self._get_center(target)
                     
                     routine_ids = self._check_trigger(target_center)
 

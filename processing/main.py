@@ -21,7 +21,7 @@ def draw_for_test(img, x1, y1, x2, y2, cls):
     cv2.rectangle(img, (x1, y1), (x2, y2), color, 5)
 
     confidence = math.ceil((box.conf[0]*100))/100
-    print("Confidence --->",confidence)
+    # print("Confidence --->",confidence)
 
     org = [x1, y1]
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -41,7 +41,7 @@ if __name__ == '__main__':
             try:
                 threaded_camera.show_frame()
                 img = threaded_camera.read()
-                results = model(img, stream=True)
+                results = model(img, stream=True, verbose=False)
                 w, h = 1280, 720
 
                 for r in results:
@@ -51,7 +51,8 @@ if __name__ == '__main__':
                             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
                             cls = int(box.cls[0])
                             
-                            processor.push(((x1/w, y1/h), (x2/w, y2/h), cls))
+                            targetPoint: tuple[tuple[float, float], tuple[float, float], str] = ((x1/w, y1/h), (x2/w, y2/h), classNames[cls])
+                            processor.push(targetPoint)
                             # print((x1/w, y1/h), (x2/w, y2/h))
                             # print("Class name -->", classNames[cls])
                             draw_for_test(img, x1, y1, x2, y2, cls)
@@ -61,3 +62,5 @@ if __name__ == '__main__':
                 print(traceback_message)
                 time.sleep(2)
                 break
+
+

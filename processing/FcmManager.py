@@ -18,7 +18,7 @@ class FcmManager:
         credentials.refresh(request)
         return credentials.token
 
-    def send_fcm_message(self, routineNumber):
+    def send_fcm_message(self, routineNumber: str):
         headers = {
             'Authorization': 'Bearer ' + self._get_access_token(),
             'Content-Type': 'application/json; UTF-8',
