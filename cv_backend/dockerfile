@@ -1,0 +1,8 @@
+FROM ultralytics/ultralytics:latest-python
+RUN apt update && \
+    pip3 intall firebase_admin
+
+COPY ./processing ./
+COPY ./model.pt ./
+
+CMD python3 main.py

@@ -3,6 +3,7 @@ import json
 import requests
 import google.auth.transport.requests
 from google.oauth2 import service_account
+import os
 
 PROJECT_ID = 'se-tmp'
 BASE_URL = 'https://fcm.googleapis.com'
@@ -12,8 +13,13 @@ SCOPES = ['https://www.googleapis.com/auth/firebase.messaging']
 
 class FcmManager:
     def _get_access_token(self):
-        credentials = service_account.Credentials.from_service_account_file(
-            'se-tmp-pk.json', scopes=SCOPES)
+        credentials
+        if "IN_CONTAINER" not in os.environ:
+            credentials = service_account.Credentials.from_service_account_file(
+            '../se-tmp-pk.json', scopes=SCOPES)
+        else:
+            credentials = service_account.Credentials.from_service_account_file(
+            '/run/secrets/fb_pk', scopes=SCOPES)
         request = google.auth.transport.requests.Request()
         credentials.refresh(request)
         return credentials.token

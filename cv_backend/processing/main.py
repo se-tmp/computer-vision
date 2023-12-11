@@ -3,9 +3,11 @@ from ultralytics import YOLO
 import cv2, math, time, signal, sys
 from ThreadedCamera import ThreadedCamera
 from Processor import Processor, classNames
+import os
 
-model = YOLO("model.pt")
-rtmpAddress = "rtmp://rapisim.asuscomm.com/mystream/test"
+model_path = "./model.pt" if "IN_CONTAINER" in os.environ else "../model.pt"
+model = YOLO("../model.pt")
+rtmpAddress = os.environ.get("RTMPADDRESS")
 
 def signal_handler(sig, frame):
     sys.exit(0)
@@ -39,7 +41,8 @@ if __name__ == '__main__':
 
         while True:
             try:
-                threaded_camera.show_frame()
+                if os.environ.get("IN_CONTAINER") == "":
+                    threaded_camera.show_frame()
                 img = threaded_camera.read()
                 results = model(img, stream=True, verbose=False)
                 w, h = 1280, 720

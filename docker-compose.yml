@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  cv_backend:
+    container_name: cv_backend
+    image: cv_backend:1.0
+    build: ./cv_backend/.
+    restart: always
+    env_file:
+      - ./cv_backend/envs.env
+    secrets:
+      - fb_pk
+
+secrets:
+   fb_pk:
+     file: ./cv_backend/se-tmp-pk.json
