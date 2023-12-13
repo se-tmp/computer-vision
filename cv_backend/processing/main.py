@@ -6,7 +6,7 @@ from Processor import Processor, classNames
 import os
 
 model_path = "./model.pt" if "IN_CONTAINER" in os.environ else "../model.pt"
-model = YOLO("../model.pt")
+model = YOLO(model_path)
 rtmpAddress = os.environ.get("RTMPADDRESS")
 
 def signal_handler(sig, frame):
